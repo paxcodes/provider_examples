@@ -4,12 +4,10 @@ import 'package:provider/provider.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  final String someString = "SOME STRINNNG";
-
   @override
   Widget build(BuildContext context) {
-    return Provider<String>(
-      create: (context) => someString,
+    return ChangeNotifierProvider<Data>(
+      create: (context) => Data(),
       child: MaterialApp(
         home: Scaffold(
           appBar: AppBar(
@@ -47,7 +45,7 @@ class Level3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text(Provider.of<String>(context)),
+      child: Text(Provider.of<Data>(context).someString),
     );
   }
 }
@@ -55,7 +53,7 @@ class Level3 extends StatelessWidget {
 class MyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Text('Needs data');
+    return Text(Provider.of<Data>(context).someString);
   }
 }
 
@@ -64,4 +62,8 @@ class MyTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField();
   }
+}
+
+class Data extends ChangeNotifier {
+  final String someString = "Some paxxx";
 }
