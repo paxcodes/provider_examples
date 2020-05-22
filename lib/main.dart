@@ -53,7 +53,12 @@ class Level3 extends StatelessWidget {
 class MyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Text(context.watch<Data>().someString);
+    // To only rebuild when a specific piece in the data has changed.
+    return Text(context.select<Data, String>((Data d) => d.titleString));
+    // If I use `watch`, this widget will unnecessarily be rebuilt in
+    // every keystroke.
+    // print("MY TEXT WILL BUILD EVERY KEYSTROKE IN THE TEXTFIELD");
+    // return Text(context.watch<Data>().titleString);
   }
 }
 
@@ -67,6 +72,7 @@ class MyTextField extends StatelessWidget {
 }
 
 class Data extends ChangeNotifier {
+  String titleString = "App Title";
   String someString = "Some paxxx";
 
   void changeString(String newString) {
