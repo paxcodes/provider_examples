@@ -45,7 +45,7 @@ class Level3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text(Provider.of<Data>(context).someString),
+      child: Text(context.watch<Data>().someString),
     );
   }
 }
@@ -53,7 +53,12 @@ class Level3 extends StatelessWidget {
 class MyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Text(Provider.of<Data>(context).someString);
+    // To only rebuild when a specific piece in the data has changed.
+    return Text(context.select<Data, String>((Data d) => d.titleString));
+    // If I use `watch`, this widget will unnecessarily be rebuilt in
+    // every keystroke.
+    // print("MY TEXT WILL BUILD EVERY KEYSTROKE IN THE TEXTFIELD");
+    // return Text(context.watch<Data>().titleString);
   }
 }
 
@@ -61,23 +66,13 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(onChanged: (newText) {
-      // `listen: false` is necessary for elements to be notified of the change
-      // Paraphrased from docs: `listen: false` must be passed when exposing
-      // data using Provider in an event handler.
-      // Why: Because in our scenario, we only need to change the data--not
-      // read the data. It doesn't need to listen for changes.
-      // https://github.com/rrousselGit/provider/issues/313#issuecomment-576156922
-      // From docs: Tried to listen to a value exposed with provider, from
-      // outside of the widget tree. This is likely caused by an event handler
-      // (like a button's onPressed) that called
-      // Provider.of without passing `listen: false`.
-      // https://pub.dev/documentation/provider/latest/provider/Provider/of.html
-      Provider.of<Data>(context, listen: false).changeString(newText);
+      context.read<Data>().changeString(newText);
     });
   }
 }
 
 class Data extends ChangeNotifier {
+  String titleString = "App Title";
   String someString = "Some paxxx";
 
   void changeString(String newString) {
